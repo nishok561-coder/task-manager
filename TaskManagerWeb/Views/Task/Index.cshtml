@@ -1,62 +1,167 @@
 @model List<TaskManagerWeb.Models.TaskItem>
 
-<h1>Task Manager</h1>
+<div class="main-container">
 
-<form method="post" asp-action="Add">
+    <div class="hero">
 
-    <input type="text"
-           name="Title"
-           placeholder="Task Title"
-           required />
+        <h1>Stay Locked In.</h1>
 
-    <select name="Priority">
+        <p>
+            Organize your chaos.
+            Build momentum.
+            Stay dangerous.
+        </p>
 
-        <option value="High">High</option>
-        <option value="Medium">Medium</option>
-        <option value="Low">Low</option>
+    </div>
+    <div class="stats-grid">
 
-    </select>
+    <div class="stat-card glass-card">
 
-    <input type="text"
-           name="DueDate"
-           placeholder="Due Date" />
+        <h2>@Model.Count</h2>
 
-    <button type="submit">
-        Add Task
-    </button>
+        <p>Total Tasks</p>
 
-</form>
+    </div>
 
-<hr />
+    <div class="stat-card glass-card">
 
-@foreach (var task in Model)
+        <h2>@Model.Count(t => t.Completed)</h2>
+
+        <p>Completed</p>
+
+    </div>
+
+    <div class="stat-card glass-card">
+
+        <h2>@Model.Count(t => !t.Completed)</h2>
+
+        <p>Pending</p>
+
+    </div>
+
+</div>
+
+    <form method="post"
+          asp-action="Add"
+          class="task-form glass-card">
+
+        <input type="text"
+               name="Title"
+               placeholder="What you got in your mind?"
+               required />
+
+        <select name="Priority">
+
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+
+        </select>
+
+        <input type="text"
+               name="DueDate"
+               placeholder="Due date" />
+
+        <button type="submit">
+            Add Task
+        </button>
+
+    </form>
+
+    <div class="task-grid">
+
+       @for(int i = 0; i < Model.Count; i++)
 {
-    <div style="border:1px solid gray;
-                padding:10px;
-                margin:10px;">
+    var task = Model[i];
+
+    var priorityClass = task.Priority.ToString().ToLower();
+
+    <div class="task-card glass-card priority-@priorityClass"
+         style="animation-delay:@(i * 0.1)s">
 
         <h3>@task.Title</h3>
 
-        <p>Priority: @task.Priority</p>
-
-        <p>Due Date: @task.DueDate</p>
-
         <p>
-            Status:
-            @(task.Completed ? "Completed" : "Pending")
+            Priority:
+            <strong>@task.Priority</strong>
         </p>
 
-        <a asp-action="Complete"
-           asp-route-id="@task.Id">
-            Complete
-        </a>
+        <p>
+            Due:
+            @task.DueDate
+        </p>
 
-        |
+        <div class="status @(task.Completed ? "completed" : "pending")">
 
-        <a asp-action="Delete"
-           asp-route-id="@task.Id">
-            Delete
-        </a>
+            @(task.Completed ? "Completed" : "Pending")
+
+        </div>
+
+        <div class="actions">
+
+            <a asp-action="Complete"
+               asp-route-id="@task.Id"
+               class="complete-btn">
+
+                Complete
+
+            </a>
+
+            <a asp-action="Delete"
+               asp-route-id="@task.Id"
+               class="delete-btn">
+
+                Delete
+
+            </a>
+
+        </div>
 
     </div>
 }
+
+    </div>
+    @if(!Model.Any())
+{
+    <div class="glass-card empty-state">
+
+        <h2>No tasks yet.</h2>
+
+        <p>
+            Lock in and start building something.
+        </p>
+
+    </div>
+}
+@{
+    var total = Model.Count;
+
+    var completed = Model.Count(t => t.Completed);
+
+    var percentage = total == 0
+        ? 0
+        : (completed * 100) / total;
+}
+
+<div class="progress-section glass-card">
+
+    <div class="progress-header">
+
+        <h2>Momentum</h2>
+
+        <span>@percentage%</span>
+
+    </div>
+
+    <div class="progress-bar">
+
+        <div class="progress-fill"
+             style="width:@percentage%">
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
