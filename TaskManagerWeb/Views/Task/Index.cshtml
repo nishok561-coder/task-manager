@@ -1,0 +1,62 @@
+@model List<TaskManagerWeb.Models.TaskItem>
+
+<h1>Task Manager</h1>
+
+<form method="post" asp-action="Add">
+
+    <input type="text"
+           name="Title"
+           placeholder="Task Title"
+           required />
+
+    <select name="Priority">
+
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+
+    </select>
+
+    <input type="text"
+           name="DueDate"
+           placeholder="Due Date" />
+
+    <button type="submit">
+        Add Task
+    </button>
+
+</form>
+
+<hr />
+
+@foreach (var task in Model)
+{
+    <div style="border:1px solid gray;
+                padding:10px;
+                margin:10px;">
+
+        <h3>@task.Title</h3>
+
+        <p>Priority: @task.Priority</p>
+
+        <p>Due Date: @task.DueDate</p>
+
+        <p>
+            Status:
+            @(task.Completed ? "Completed" : "Pending")
+        </p>
+
+        <a asp-action="Complete"
+           asp-route-id="@task.Id">
+            Complete
+        </a>
+
+        |
+
+        <a asp-action="Delete"
+           asp-route-id="@task.Id">
+            Delete
+        </a>
+
+    </div>
+}
