@@ -800,3 +800,273 @@ body::after{
         transform:translateY(0);
     }
 }
+/* ───────────────── DASHBOARD LAYOUT ───────────────── */
+
+.dashboard-layout{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:24px;
+
+    align-items:start;
+}
+
+/* Right Panel */
+
+.right-panel{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+
+    position:sticky;
+
+    top:30px;
+}
+
+/* ───────────────── CALENDAR ───────────────── */
+
+.calendar-widget{
+
+    padding:24px;
+}
+
+/* Header */
+
+.calendar-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.calendar-header h2{
+
+    font-size:1.2rem;
+}
+
+/* Navigation */
+
+.calendar-nav{
+
+    display:flex;
+
+    gap:10px;
+}
+
+.calendar-nav span{
+
+    width:32px;
+    height:32px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:10px;
+
+    background:rgba(255,255,255,0.05);
+
+    cursor:pointer;
+
+    transition:0.2s ease;
+}
+
+.calendar-nav span:hover{
+
+    background:rgba(255,123,0,0.18);
+}
+
+/* Days */
+
+.calendar-days,
+.calendar-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    gap:10px;
+}
+
+.calendar-days{
+
+    margin-bottom:14px;
+}
+
+.calendar-days span{
+
+    color:var(--muted);
+
+    text-align:center;
+
+    font-size:0.8rem;
+}
+
+/* Calendar Numbers */
+
+.calendar-grid span{
+
+    aspect-ratio:1/1;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,0.03);
+
+    transition:0.2s ease;
+
+    cursor:pointer;
+}
+
+.calendar-grid span:hover{
+
+    background:
+    rgba(255,123,0,0.18);
+
+    transform:translateY(-2px);
+}
+
+/* Active Day */
+
+.active-day{
+
+    background:
+    linear-gradient(
+    135deg,
+    #ff7b00,
+    #ffb347
+    ) !important;
+
+    color:white;
+
+    font-weight:700;
+
+    box-shadow:
+    0 0 20px rgba(255,123,0,0.25);
+}
+
+/* Muted */
+
+.muted-day{
+
+    opacity:0.35;
+}
+
+/* ───────────────── FOCUS PANEL ───────────────── */
+
+.focus-widget{
+
+    text-align:center;
+}
+
+.focus-widget h2{
+
+    margin-bottom:10px;
+}
+
+.focus-widget p{
+
+    color:var(--muted);
+
+    margin-bottom:20px;
+}
+
+.focus-time{
+
+    font-size:3rem;
+
+    font-weight:800;
+
+    margin-bottom:24px;
+
+    background:
+    linear-gradient(
+    90deg,
+    #ffffff,
+    #ffb347,
+    #ff7b00
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+/* Focus Button */
+
+.focus-btn{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+    90deg,
+    #ff7b00,
+    #ffb347
+    );
+
+    color:white;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.25s ease;
+}
+
+.focus-btn:hover{
+
+    transform:scale(1.03);
+
+    box-shadow:
+    0 0 20px rgba(255,123,0,0.25);
+}
+
+/* Responsive */
+
+@media(max-width:1100px){
+
+    .dashboard-layout{
+
+        grid-template-columns:1fr;
+    }
+
+    .right-panel{
+
+        position:relative;
+
+        top:0;
+    }
+}
+/* Days With Tasks */
+
+.task-day{
+
+    border:
+    1px solid rgba(255,123,0,0.25);
+
+    box-shadow:
+    0 0 18px rgba(255,123,0,0.12);
+}

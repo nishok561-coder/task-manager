@@ -1,4 +1,18 @@
 @model List<TaskManagerWeb.Models.TaskItem>
+@{
+    var selectedDate =
+        DateTime.Today;
+}
+
+@{
+    var total = Model.Count;
+
+    var completed = Model.Count(t => t.Completed);
+
+    var percentage = total == 0
+        ? 0
+        : (completed * 100) / total;
+}
 
 <div class="main-container">
 
@@ -13,33 +27,55 @@
         </p>
 
     </div>
+
     <div class="stats-grid">
 
-    <div class="stat-card glass-card">
+        <div class="stat-card glass-card">
 
-        <h2>@Model.Count</h2>
+            <h2>@Model.Count</h2>
 
-        <p>Total Tasks</p>
+            <p>Total Tasks</p>
+
+        </div>
+
+        <div class="stat-card glass-card">
+
+            <h2>@Model.Count(t => t.Completed)</h2>
+
+            <p>Completed</p>
+
+        </div>
+
+        <div class="stat-card glass-card">
+
+            <h2>@Model.Count(t => !t.Completed)</h2>
+
+            <p>Pending</p>
+
+        </div>
 
     </div>
 
-    <div class="stat-card glass-card">
+    <div class="progress-section glass-card">
 
-        <h2>@Model.Count(t => t.Completed)</h2>
+        <div class="progress-header">
 
-        <p>Completed</p>
+            <h2>Momentum</h2>
+
+            <span>@percentage%</span>
+
+        </div>
+
+        <div class="progress-bar">
+
+            <div class="progress-fill"
+                 style="width:@percentage%">
+
+            </div>
+
+        </div>
 
     </div>
-
-    <div class="stat-card glass-card">
-
-        <h2>@Model.Count(t => !t.Completed)</h2>
-
-        <p>Pending</p>
-
-    </div>
-
-</div>
 
     <form method="post"
           asp-action="Add"
@@ -47,7 +83,7 @@
 
         <input type="text"
                name="Title"
-               placeholder="What you got in your mind?"
+               placeholder="What are we building today?"
                required />
 
         <select name="Priority">
@@ -58,110 +94,171 @@
 
         </select>
 
-        <input type="text"
-               name="DueDate"
-               placeholder="Due date" />
-
+        <input type="date"
+       name="DueDate" />
         <button type="submit">
             Add Task
         </button>
 
     </form>
 
-    <div class="task-grid">
+    <div class="dashboard-layout">
 
-       @for(int i = 0; i < Model.Count; i++)
+        <!-- LEFT PANEL -->
+
+        <div class="left-panel">
+
+            <div class="task-grid">
+
+                @if(!Model.Any())
+                {
+                    <div class="glass-card empty-state">
+
+                        <h2>No tasks yet.</h2>
+
+                        <p>
+                            Lock in and start building something.
+                        </p>
+
+                    </div>
+                }
+
+                @for(int i = 0; i < Model.Count; i++)
+                {
+                    var task = Model[i];
+
+                    var priorityClass =
+                        task.Priority.ToString().ToLower();
+
+                    <div class="task-card glass-card priority-@priorityClass"
+                         style="animation-delay:@(i * 0.1)s">
+
+                        <div>
+
+                            <h3>@task.Title</h3>
+
+                            <p>
+                                Priority:
+                                <strong>@task.Priority</strong>
+                            </p>
+
+                            <p>
+                                Due:
+                                @task.DueDate.ToString("dd MMM yyyy")
+                            </p>
+
+                            <div class="status @(task.Completed ? "completed" : "pending")">
+
+                                @(task.Completed ? "Completed" : "Pending")
+
+                            </div>
+
+                        </div>
+
+                        <div class="actions">
+
+                            <a asp-action="Complete"
+                               asp-route-id="@task.Id"
+                               class="complete-btn">
+
+                                Complete
+
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@task.Id"
+                               class="delete-btn">
+
+                                Delete
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+        <div class="right-panel">
+
+            <!-- CALENDAR -->
+
+            <div class="calendar-widget glass-card">
+
+                <div class="calendar-header">
+
+                    <h2>May 2026</h2>
+
+                    <div class="calendar-nav">
+
+                        <span>◀</span>
+                        <span>▶</span>
+
+                    </div>
+
+                </div>
+
+                <div class="calendar-days">
+
+                    <span>S</span>
+                    <span>M</span>
+                    <span>T</span>
+                    <span>W</span>
+                    <span>T</span>
+                    <span>F</span>
+                    <span>S</span>
+
+                </div>
+
+                <div class="calendar-grid">
+
+@for(int day = 1; day <= 31; day++)
 {
-    var task = Model[i];
+    var current =
+        new DateTime(2026,5,day);
 
-    var priorityClass = task.Priority.ToString().ToLower();
+    var hasTask =
+        Model.Any(t =>
+            t.DueDate.Date == current.Date);
 
-    <div class="task-card glass-card priority-@priorityClass"
-         style="animation-delay:@(i * 0.1)s">
+    <span class="
+        @(day == DateTime.Today.Day ? "active-day" : "")
+        @(hasTask ? "task-day" : "")
+    ">
 
-        <h3>@task.Title</h3>
+        @day
 
-        <p>
-            Priority:
-            <strong>@task.Priority</strong>
-        </p>
-
-        <p>
-            Due:
-            @task.DueDate
-        </p>
-
-        <div class="status @(task.Completed ? "completed" : "pending")">
-
-            @(task.Completed ? "Completed" : "Pending")
-
-        </div>
-
-        <div class="actions">
-
-            <a asp-action="Complete"
-               asp-route-id="@task.Id"
-               class="complete-btn">
-
-                Complete
-
-            </a>
-
-            <a asp-action="Delete"
-               asp-route-id="@task.Id"
-               class="delete-btn">
-
-                Delete
-
-            </a>
-
-        </div>
-
-    </div>
+    </span>
 }
-
-    </div>
-    @if(!Model.Any())
-{
-    <div class="glass-card empty-state">
-
-        <h2>No tasks yet.</h2>
-
-        <p>
-            Lock in and start building something.
-        </p>
-
-    </div>
-}
-@{
-    var total = Model.Count;
-
-    var completed = Model.Count(t => t.Completed);
-
-    var percentage = total == 0
-        ? 0
-        : (completed * 100) / total;
-}
-
-<div class="progress-section glass-card">
-
-    <div class="progress-header">
-
-        <h2>Momentum</h2>
-
-        <span>@percentage%</span>
-
-    </div>
-
-    <div class="progress-bar">
-
-        <div class="progress-fill"
-             style="width:@percentage%">
-
-        </div>
-
-    </div>
 
 </div>
+            <!-- FOCUS PANEL -->
+
+            <div class="focus-widget glass-card">
+
+                <h2>Focus Session</h2>
+
+                <p>Deep Work Mode</p>
+
+                <div class="focus-time">
+                    02:14:36
+                </div>
+
+                <button class="focus-btn">
+
+                    Resume Session
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>

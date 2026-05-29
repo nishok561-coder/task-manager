@@ -1,7 +1,14 @@
+using TaskManagerWeb.Repositories;
+using Microsoft.EntityFrameworkCore;
+using TaskManagerWeb.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(
+        "Data Source=taskmanager.db"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<TaskRepository>();
 
 var app = builder.Build();
 

@@ -6,11 +6,17 @@ namespace TaskManagerWeb.Controllers
 {
     public class TaskController : Controller
     {
-        private readonly TaskRepository repo = new();
+        private readonly TaskRepository _repo;
+
+        public TaskController(
+            TaskRepository repo)
+        {
+            _repo = repo;
+        }
 
         public IActionResult Index()
         {
-            var tasks = repo.GetAll();
+            var tasks = _repo.GetAll();
 
             return View(tasks);
         }
@@ -18,21 +24,21 @@ namespace TaskManagerWeb.Controllers
         [HttpPost]
         public IActionResult Add(TaskItem task)
         {
-            repo.Add(task);
+            _repo.Add(task);
 
             return RedirectToAction("Index");
         }
 
         public IActionResult Complete(int id)
         {
-            repo.Complete(id);
+            _repo.Complete(id);
 
             return RedirectToAction("Index");
         }
 
         public IActionResult Delete(int id)
         {
-            repo.Delete(id);
+            _repo.Delete(id);
 
             return RedirectToAction("Index");
         }
